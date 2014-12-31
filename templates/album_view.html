@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% block title %}Альбом: {{ album.title }}{% endblock %} {% block css %} {% load static from staticfiles %}
+<link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/album.css' %}"> {% endblock %} {% block content %}
+
+<body>
+  <h6>{{ album.band }}:<br /><span>{{ album.title }}</span><br /><br />{{ album.band }}:<br /><span>{{ album.title }}</span></h6>
+  <div class="head">
+    <a href="/band/{{ album.band.id }}"><img border="0" class="arrow" src="{% static 'img/arrow.png' %}" title="Вернуться к группе {{ album.band }}">
+    </a>
+    <h1>{{ album.title }}</h1>
+  </div>
+  <div class="w-container gradient-filling">
+    <div class="subject">
+      <div class="section subject-pic">
+        <div class="pic-holder">
+          <img class="pic shadow" src="/media/{{ album.pic|default:'album_pics/nocover.jpg' }}" alt="{{ album.title }}">
+          <div class="label shadow">
+            <span>Оценка: {{ album.rating }}/5</span>
+          </div>
+        </div>
+      </div>
+      <div class="section list">
+        <h2>Треклист:</h2>
+        <ul>
+          {% for track in tracks %} {% if track.rating > 2 %}
+          <li style=" background: linear-gradient(0deg, rgba(233, 249, 0, 0.{{ track.rating|add:-3 }}) 65%, rgba(0,0,0,0));">{{ track.number }}. <b>{{ track.title }}</b>
+          </li>
+          {% else %}
+          <li style=" background: linear-gradient(0deg, rgba(225, 225, 225, 0.{{ track.rating }}) 65%, rgba(0,0,0,0));">{{ track.number }}. <b>{{ track.title }}</b>
+          </li>
+          {% endif %} {% endfor %}
+        </ul>
+      </div>
+      <div class="section text">
+        <h2>Описание альбома:</h2>
+        <p>{{ album.bio }}</p>
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock %}

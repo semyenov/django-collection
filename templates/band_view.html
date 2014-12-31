@@ -1,0 +1,93 @@
+{% extends 'base.html' %} {% block title %}Группа: {{ band.name }}{% endblock %} {% block css %} {% load staticfiles %}
+<link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/band.css' %}">
+<script type="text/javascript">
+  <!--
+  function toggle_visibility(id) {
+      var e = document.getElementById(id);
+      if (e.style.display == 'block')
+        e.style.display = 'none';
+      else
+        e.style.display = 'block';
+    }
+    //-->
+</script>
+{% endblock %} {% block content %}
+
+<body>
+  <h6>{{ band.name }}:<br /><span>{% for artist in band.artists.all %}{{ artist.name }} {{ artist.surname }}<br />{% endfor %}</span></h6>
+  <div class="head">
+    <a href="/bands/"><img border="0" class="arrow" src="{% static 'img/arrow.png' %}" title="Все группы">
+    </a>
+    <h1>{{ band.name }}</h1>
+  </div>
+  <div class="w-container gradient-filling">
+    <div class="subject">
+      <div class="section subject-pic">
+        <div class="w-clearfix pic-holder"><img class="pic shadow" src="/media/{{ band.pic|default:'album_pics/nocover.jpg' }}" alt="{{ band.name }}">
+          <div class="label shadow">
+            <span>{{ band.start_year }} - {{ band.finish_year|default_if_none:'наши дни' }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="section list w-clearfix">
+        <h2>Учасники:</h2>
+        <ul>
+          {% for artist in band.artists.all %}
+          <li style=" background: linear-gradient(0deg, rgba(233, 249, 0, 0.{{ album.rating|add:-3 }}) 65%, rgba(0,0,0,0));">
+            <b>{{ artist.name }} {{ artist.surname }}</b>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="section grid w-clearfix">
+        <h2>Альбомы:</h2>
+        <div class="w-row grid">
+          {% for album in albums %}
+          <div class="w-col w-col-6">
+            <a href="/album/{{ album.id }}">
+              <div class="pic-holder">
+                <img class="pic shadow" src="/media/{{ album.pic|default:'album_pics/nocover.jpg' }}" title="Перейти к альбому {{ album.title }}">
+                <div class="label shadow">
+                  <span>
+                    {% if album.title|length > 50 %}
+                    {{ album.title|slice:'20' }}..
+                    {% else %}
+                    {{ album.title }}
+                    {% endif %}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+          <div class="w-col w-col-6">
+            <a href="#">
+              <div class="pic-holder">
+                <img class="pic" src="{% static 'img/plus.png' %}" onclick="toggle_visibility('add');" title="Добавить альбом">
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="section  w-clearfix add-album" style="display: none" id="add">
+        <h2>Добавление альбома:</h2>
+        <form method="POST" class="form" action="/changealbum/" enctype="multipart/form-data" id="add-album-form">
+          <input placeholder="Название альбома" id="id_title" maxlength="100" name="title" type="text">
+          <select id="id_category" name="category">
+            <option value="LP" selected="selected">LP</option>
+            <option value="EP">EP</option>
+            <option value="SINGLE">SINGLE</option>
+          </select>
+          <input type="submit" class="button" value="Продолжить">
+        </form>
+      </div>
+      <div class="text section w-clearfix">
+        <h2>История группы:</h2>
+        <p>{{ band.bio }}</p>
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock %}
